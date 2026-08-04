@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+/* ─── Dark mode via classe no <html> ──────────────────────────────────────── */
+/* Equivalente ao darkMode: 'class' do tailwind.config.ts v3                  */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Theme — substitui tailwind.config.ts no v4 ─────────────────────────── */
+@theme {
+  --font-sans: var(--font-syne), sans-serif;
+  --font-mono: var(--font-dm-mono), monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+}
