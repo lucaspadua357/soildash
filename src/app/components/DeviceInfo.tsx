@@ -11,14 +11,20 @@ interface DeviceInfoProps {
   device: DeviceData
 }
 
-const rows = [
-  { key: 'firmware', label: 'firmware' },
-  { key: 'chip', label: 'chip' },
+interface Row {
+  key: keyof DeviceData
+  label: string
+  suffix?: string
+}
+
+const rows: Row[] = [
+  { key: 'firmware',  label: 'firmware' },
+  { key: 'chip',      label: 'chip' },
   { key: 'sensorPin', label: 'sensor / GPIO' },
-  { key: 'interval', label: 'intervalo', suffix: 's' },
-  { key: 'uptime', label: 'uptime' },
-  { key: 'ip', label: 'endereço IP' },
-] as const
+  { key: 'interval',  label: 'intervalo', suffix: 's' },
+  { key: 'uptime',    label: 'uptime' },
+  { key: 'ip',        label: 'endereço IP' },
+]
 
 export default function DeviceInfo({ device }: DeviceInfoProps) {
   return (
