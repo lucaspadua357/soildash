@@ -20,6 +20,7 @@ const initialWeather: WeatherData = {
   time:          '',
 }
 
+
 export function useWeatherData() {
   const [weather, setWeather]       = useState<WeatherData>(initialWeather)
   const [isLoaded, setIsLoaded]     = useState(false)

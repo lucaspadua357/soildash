@@ -8,6 +8,7 @@ export interface ForecastDay {
   tempMin:       number
   precipitation: number
   windSpeed:     number
+  rainChance:    number
   humidity:      number
   weatherCode:   number
 }

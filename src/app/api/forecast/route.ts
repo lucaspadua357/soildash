@@ -7,7 +7,7 @@ const URL =
   `https://api.open-meteo.com/v1/forecast` +
   `?latitude=${LAT}&longitude=${LON}` +
   `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,` +
-  `wind_speed_10m_max,relative_humidity_2m_mean,weather_code` +
+  `precipitation_probability_max,wind_speed_10m_max,relative_humidity_2m_mean,weather_code` +
   `&timezone=America%2FSao_Paulo` +
   `&forecast_days=7`
 
@@ -26,9 +26,10 @@ export async function GET() {
       tempMax:       d.temperature_2m_max[i],
       tempMin:       d.temperature_2m_min[i],
       precipitation: d.precipitation_sum[i],
-      windSpeed:     d.wind_speed_10m_max[i],
+      rainChance:    d.precipitation_probability_max[i],  // % chance de chuva
       humidity:      d.relative_humidity_2m_mean[i],
       weatherCode:   d.weather_code[i],
+      windSpeed: d.wind_speed_10m_max[i],
     }))
 
     return NextResponse.json(forecast)

@@ -22,10 +22,11 @@ export interface SensorData {
   alerts: Alert[]
 }
 
-export type TimeRange = '1h' | '6h' | '24h' | '7d'
+export type TimeRange = '1h' | '12h' | '7d'
 
 const API_URL = '/api/sensor'
 const POLL_INTERVAL_MS = 5_000
+const TZ = 'America/Sao_Paulo'
 
 function formatUptime(seconds: number): string {
   const h = Math.floor(seconds / 3600)
@@ -42,21 +43,50 @@ function calcTrend(history: { humidity: number }[]): string {
   return diff > 0 ? `▲ +${diff.toFixed(1)}%` : `▼ ${diff.toFixed(1)}%`
 }
 
-function timeRangeToMinutes(range: TimeRange): number {
+function timeRangeToConfig(range: TimeRange): { minutes: number; bucketMin: number; maxPoints: number } {
   switch (range) {
-    case '1h':  return 60
-    case '6h':  return 360
-    case '24h': return 1440
-    case '7d':  return 10080
+    case '1h': return { minutes: 60, bucketMin: 10, maxPoints: 6 }
+    case '12h': return { minutes: 720, bucketMin: 60, maxPoints: 12 }
+    case '7d': return { minutes: 10080, bucketMin: 1440, maxPoints: 7 }
   }
 }
 
-function formatTime(dateStr: string, range: TimeRange): string {
-  const date = new Date(dateStr)
+function toLabel(utcStr: string, range: TimeRange): string {
+  const d = new Date(utcStr)
   if (range === '7d') {
-    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+    return d.toLocaleDateString('pt-BR', { timeZone: TZ, weekday: 'short', day: '2-digit' })
   }
-  return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+  return d.toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' })
+}
+
+function aggregate(
+  rows: { created_at: string; humidity: number }[],
+  bucketMin: number,
+  range: TimeRange
+): { time: string; humidity: number }[] {
+  if (!rows.length) return []
+
+  const bucketMs = bucketMin * 60 * 1000
+  const map = new Map<number, { sum: number; count: number; created_at: string }>()
+
+  for (const row of rows) {
+    const ms = new Date(row.created_at).getTime()
+    const key = Math.floor(ms / bucketMs) * bucketMs
+    const cur = map.get(key)
+    if (cur) {
+      cur.sum += row.humidity
+      cur.count++
+    } else {
+      map.set(key, { sum: row.humidity, count: 1, created_at: row.created_at })
+    }
+  }
+
+  return Array.from(map.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([, { sum, count, created_at }]) => ({
+      time: toLabel(created_at, range),
+      humidity: Math.round((sum / count) * 10) / 10,
+    }))
 }
 
 const initialData: SensorData = {
@@ -78,35 +108,47 @@ const initialData: SensorData = {
 }
 
 export function useSensorData() {
-  const [data, setData]               = useState<SensorData>(initialData)
+  const [data, setData] = useState<SensorData>(initialData)
   const [isConnected, setIsConnected] = useState(false)
-  const [lastUpdate, setLastUpdate]   = useState<Date | null>(null)
-  const [timeRange, setTimeRange]     = useState<TimeRange>('1h')
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
+  const [timeRange, setTimeRange] = useState<TimeRange>('1h')
 
-  // Busca histórico do Supabase conforme o período selecionado
   const fetchHistory = useCallback(async (range: TimeRange) => {
-    const minutes = timeRangeToMinutes(range)
-    const since = new Date(Date.now() - minutes * 60 * 1000).toISOString()
+    const { minutes, bucketMin } = timeRangeToConfig(range)
 
     const { data: rows, error } = await supabase
-      .from('readings')
-      .select('created_at, humidity')
-      .gte('created_at', since)
-      .order('created_at', { ascending: true })
-      .limit(500)
+      .rpc('get_humidity_history', {
+        range_minutes: minutes,
+        bucket_minutes: bucketMin,
+      })
 
     if (error) {
-      console.error('[Supabase] Erro ao buscar histórico:', error.message)
+      console.error('[Supabase] Erro RPC:', error.message)
       return []
     }
 
-    return (rows ?? []).map(r => ({
-      time:     formatTime(r.created_at, range),
-      humidity: r.humidity,
-    }))
+    if (!rows || rows.length === 0) return []
+
+    // Converte o resultado da RPC para o formato do gráfico
+    return rows.map((row: { bucket_time: string; avg_humidity: number }) => {
+      const date = new Date(row.bucket_time)
+      const isDay = range === '7d'
+      const time = isDay
+        ? date.toLocaleDateString('pt-BR', {
+          timeZone: TZ,
+          weekday: 'short',
+          day: '2-digit',
+          month: '2-digit',
+        })
+        : date.toLocaleTimeString('pt-BR', {
+          timeZone: TZ,
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      return { time, humidity: row.avg_humidity }
+    })
   }, [])
 
-  // Polling da leitura atual
   const fetchFromESP32 = useCallback(async () => {
     try {
       const res = await fetch(API_URL, { signal: AbortSignal.timeout(6000) })
@@ -141,16 +183,16 @@ export function useSensorData() {
 
         return {
           ...prev,
-          humidity:      json.humidity,
-          temperature:   json.temperature  ?? null,
-          conductivity:  json.conductivity ?? null,
-          rssi:          json.rssi         ?? prev.rssi,
+          humidity: json.humidity,
+          temperature: json.temperature ?? null,
+          conductivity: json.conductivity ?? null,
+          rssi: json.rssi ?? prev.rssi,
           humidityTrend: calcTrend(history),
           history,
           device: {
             ...prev.device,
             firmware: json.firmware ? `v${json.firmware}` : prev.device.firmware,
-            uptime:   formatUptime(json.uptime ?? 0),
+            uptime: formatUptime(json.uptime ?? 0),
           },
           alerts: newAlerts.slice(0, 10),
         }
@@ -162,7 +204,6 @@ export function useSensorData() {
     }
   }, [timeRange, fetchHistory])
 
-  // Recarrega histórico quando muda o período
   useEffect(() => {
     fetchHistory(timeRange).then(history => {
       setData(prev => ({ ...prev, history }))
