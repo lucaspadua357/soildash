@@ -12,22 +12,28 @@ import HistoryPage from './components/HistoryPage'
 import ForecastPage from './components/ForecastPage'
 import { useSensorData } from './lib/useSensorData'
 import { useWeatherData } from './lib/useWeatherData'
+import SplashScreen from './components/SplashScreen'
 
 const PAGES = ['history', 'dashboard', 'forecast'] as const
 type Page = typeof PAGES[number]
 
 const PAGE_LABELS: Record<Page, string> = {
-  history:   'histórico',
+  history: 'histórico',
   dashboard: 'dashboard',
-  forecast:  'previsão',
+  forecast: 'previsão',
 }
 
 export default function Dashboard() {
   const { data, isConnected, lastUpdate, timeRange, setTimeRange } = useSensorData()
   const { weather, isLoaded } = useWeatherData()
   const [current, setCurrent] = useState<Page>('dashboard')
+  const [showSplash, setShowSplash] = useState(true)
 
   const index = PAGES.indexOf(current)
+
+  if (showSplash) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />
+  }
 
   return (
     <div className="fixed inset-0 bg-stone-950 text-stone-100 font-sans overflow-hidden">
@@ -149,14 +155,12 @@ export default function Dashboard() {
             onClick={() => setCurrent(p)}
             className="flex flex-col items-center gap-1 group"
           >
-            <div className={`transition-all duration-300 rounded-full ${
-              current === p
+            <div className={`transition-all duration-300 rounded-full ${current === p
                 ? 'w-6 h-2 bg-stone-300'
                 : 'w-2 h-2 bg-stone-600 group-hover:bg-stone-400'
-            }`} />
-            <span className={`text-[9px] font-mono transition-colors ${
-              current === p ? 'text-stone-400' : 'text-stone-700 group-hover:text-stone-500'
-            }`}>
+              }`} />
+            <span className={`text-[9px] font-mono transition-colors ${current === p ? 'text-stone-400' : 'text-stone-700 group-hover:text-stone-500'
+              }`}>
               {PAGE_LABELS[p]}
             </span>
           </button>
