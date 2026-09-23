@@ -37,12 +37,16 @@ export const metadata: Metadata = {
     description: 'Dashboard IoT para monitoramento de umidade do solo com ESP32 e sensor HD-38.',
     images: ['/og-image'],
   },
+  icons: {
+    icon: '/favicon.ico'
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className="dark">
-      <body className={`${syne.variable} ${dmMono.variable} font-sans antialiased`}>
+      <body className={`${syne.variable} ${dmMono.variable} font-sans antialiased`}
+        suppressHydrationWarning>
         {children}
         <footer className="text-xs text-stone-500 text-center py-6">
           SoilDash — monitoramento de umidade do solo com ESP32 e sensor HD-38. Projeto FETIN 2026 · Inatel.
