@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Dashboard IoT para monitoramento de umidade do solo com ESP32 e sensor HD-38. Dados em tempo real, histórico e previsão meteorológica.',
   keywords: ['monitoramento solo', 'umidade solo', 'ESP32', 'IoT', 'agricultura', 'sensor HD-38'],
   alternates: {
-    canonical: '/',
+    canonical: 'https://soildash.vercel.app',
   },
   verification: {
     google: 'D7nKj0ZsMGJCM8Z78IvbROSU58tZqU_Db7TL_2IEdBk',
