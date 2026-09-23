@@ -25,7 +25,7 @@ export default function AlertsPanel({ alerts }: AlertsPanelProps) {
       <h2 className="text-sm font-medium text-stone-200 mb-4">Alertas recentes</h2>
 
       {alerts.length === 0 ? (
-        <p className="text-xs font-mono text-stone-600 text-center py-4">sem alertas</p>
+        <p className="text-xs font-mono text-stone-600 text-center py-4">Sem alertas</p>
       ) : (
         <div className="space-y-0">
           {alerts.map((alert, i) => (
@@ -35,7 +35,7 @@ export default function AlertsPanel({ alerts }: AlertsPanelProps) {
                 i < alerts.length - 1 ? 'border-b border-stone-800' : ''
               }`}
             >
-              <div className={`w-2 h-2 rounded-full mt-1 flex-shrink-0 ${dotColors[alert.type]}`} />
+              <div className={`w-2 h-2 rounded-full mt-1 shrink-0 ${dotColors[alert.type]}`} />
               <div>
                 <p className="text-xs font-mono text-stone-300 leading-relaxed">{alert.message}</p>
                 <p className="text-[10px] font-mono text-stone-600 mt-0.5">

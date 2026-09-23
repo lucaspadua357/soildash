@@ -3,16 +3,20 @@
 interface GaugeCardProps {
   value: number
 }
-
-function getStatus(v: number) {
-  if (v < 25) return { label: 'Solo Seco', color: '#ef4444', bg: 'bg-red-950 text-red-400' }
-  if (v < 45) return { label: 'Atenção', color: '#f59e0b', bg: 'bg-amber-950 text-amber-400' }
-  if (v <= 75) return { label: 'Ideal ✓', color: '#22c55e', bg: 'bg-green-950 text-green-400' }
-  return { label: 'Saturado', color: '#3b82f6', bg: 'bg-blue-950 text-blue-400' }
+interface GaugeCardProps {
+  value: number
+  humidityMin: number
+  humidityMax: number
 }
 
-export default function GaugeCard({ value }: GaugeCardProps) {
-  const { label, color, bg } = getStatus(value)
+function getStatus(v: number, min: number, max: number) {
+  if (v < min) return { label: 'solo seco', color: '#ef4444', bg: 'bg-red-950 text-red-400' }
+  if (v <= max) return { label: 'ideal ✓', color: '#22c55e', bg: 'bg-green-950 text-green-400' }
+  return { label: 'saturado', color: '#3b82f6', bg: 'bg-blue-950 text-blue-400' }
+}
+
+export default function GaugeCard({ value, humidityMin, humidityMax }: GaugeCardProps) {
+  const { label, color, bg } = getStatus(value, humidityMin, humidityMax)
   const clamp = Math.min(Math.max(value, 0), 100)
 
   // SVG arc math: semicircle radius 55, circumference of half = π * 55 ≈ 172.8

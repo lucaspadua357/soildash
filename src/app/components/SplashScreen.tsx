@@ -13,7 +13,7 @@ export default function SplashScreen({ onFinish }: { onFinish: () => void }) {
   }, [onFinish])
 
   return (
-    <div className={`fixed inset-0 z-[100] bg-stone-950 flex flex-col items-center justify-center
+    <div className={`fixed inset-0 z-50 bg-stone-950 flex flex-col items-center justify-center
       transition-opacity duration-500 ${phase === 'out' ? 'opacity-0' : 'opacity-100'}`}>
 
       {/* Anel animado */}

@@ -62,12 +62,12 @@ export default function Dashboard() {
       >
 
         {/* Página 1 — Histórico */}
-        <div className="w-screen h-full overflow-y-auto flex-shrink-0">
+        <div className="w-screen h-full overflow-y-auto shrink-0">
           <HistoryPage />
         </div>
 
         {/* Página 2 — Dashboard */}
-        <div className="w-screen h-full overflow-y-auto flex-shrink-0">
+        <div className="w-screen h-full overflow-y-auto shrink-0">
           <div className="p-4 md:p-6 pb-20">
             <div className="max-w-5xl mx-auto space-y-4 pt-4">
 
@@ -118,9 +118,15 @@ export default function Dashboard() {
                     history={data.history}
                     timeRange={timeRange}
                     onRangeChange={setTimeRange}
+                    humidityMin={settings.humidity_min}
+                    humidityMax={settings.humidity_max}
                   />
                 </div>
-                <GaugeCard value={data.humidity} />
+                <GaugeCard
+                  value={data.humidity}
+                  humidityMin={settings.humidity_min}
+                  humidityMax={settings.humidity_max}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -139,7 +145,7 @@ export default function Dashboard() {
         </div>
 
         {/* Página 3 — Previsão */}
-        <div className="w-screen h-full overflow-y-auto flex-shrink-0 pb-16">
+        <div className="w-screen h-full overflow-y-auto shrink-0 pb-16">
           <ForecastPage
             latitude={settings.latitude}
             longitude={settings.longitude}
