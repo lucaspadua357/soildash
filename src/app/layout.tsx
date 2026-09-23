@@ -2,34 +2,40 @@ import type { Metadata } from 'next'
 import { DM_Mono, Syne } from 'next/font/google'
 import './globals.css'
 
-const syne   = Syne({ subsets: ['latin'], variable: '--font-syne' })
+const syne = Syne({ subsets: ['latin'], variable: '--font-syne' })
 const dmMono = DM_Mono({ subsets: ['latin'], weight: ['300', '400', '500'], variable: '--font-dm-mono' })
 
 export const metadata: Metadata = {
-  title:       'SoilDash',
+  title: 'SoilDash',
   description: 'Dashboard IoT para monitoramento de umidade do solo com ESP32 e sensor HD-38. Dados em tempo real, histórico e previsão meteorológica.',
-  keywords:    ['monitoramento solo', 'umidade solo', 'ESP32', 'IoT', 'agricultura', 'sensor HD-38'],
+  keywords: ['monitoramento solo', 'umidade solo', 'ESP32', 'IoT', 'agricultura', 'sensor HD-38'],
+  alternates: {
+    canonical: '/',
+  },
+  verification: {
+    google: 'D7nKj0ZsMGJCM8Z78IvbROSU58tZqU_Db7TL_2IEdBk',
+  },
   openGraph: {
-    title:       'SoilDash — Monitoramento de Solo em Tempo Real',
+    title: 'SoilDash — Monitoramento de Solo em Tempo Real',
     description: 'Dashboard IoT para monitoramento de umidade do solo com ESP32 e sensor HD-38.',
-    url:         'https://soilwatch-fetin.vercel.app',
-    siteName:    'SoilDash',
-    locale:      'pt_BR',
-    type:        'website',
+    url: 'https://soilwatch-fetin.vercel.app',
+    siteName: 'SoilDash',
+    locale: 'pt_BR',
+    type: 'website',
     images: [
       {
-        url:    '/og-image',
-        width:  1200,
+        url: '/og-image',
+        width: 1200,
         height: 630,
-        alt:    'SoilDash — Dashboard de Monitoramento de Solo',
+        alt: 'SoilDash — Dashboard de Monitoramento de Solo',
       }
     ],
   },
   twitter: {
-    card:        'summary_large_image',
-    title:       'SoilDash — Monitoramento de Solo em Tempo Real',
+    card: 'summary_large_image',
+    title: 'SoilDash — Monitoramento de Solo em Tempo Real',
     description: 'Dashboard IoT para monitoramento de umidade do solo com ESP32 e sensor HD-38.',
-    images:      ['/og-image'],
+    images: ['/og-image'],
   },
 }
 
