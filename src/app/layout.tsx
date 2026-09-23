@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'SoilDash — Monitoramento de Solo em Tempo Real',
     description: 'Dashboard IoT para monitoramento de umidade do solo com ESP32 e sensor HD-38.',
-    url: 'https://soilwatch-fetin.vercel.app',
+    url: 'https://soildash.vercel.app',
     siteName: 'SoilDash',
     locale: 'pt_BR',
     type: 'website',
