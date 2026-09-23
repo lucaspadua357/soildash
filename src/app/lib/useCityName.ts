@@ -8,22 +8,25 @@ export function useCityName(latitude: number, longitude: number): string {
   useEffect(() => {
     if (!latitude || !longitude) return
 
-    // Busca cidades próximas às coordenadas
     fetch(
-      `https://geocoding-api.open-meteo.com/v1/search?name=&latitude=${latitude}&longitude=${longitude}&count=1&language=pt&format=json`
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=pt`,
+      {
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'SoilDash/1.0 (lucas@inatel.br)',
+        }
+      }
     )
       .then(res => res.json())
       .then(data => {
-        if (data?.results?.[0]) {
-          const r = data.results[0]
-          const parts = [r.name, r.admin1].filter(Boolean)
-          setCityName(parts.join(', '))
-        } else {
-          setCityName(`${latitude}, ${longitude}`)
-        }
+        const a = data?.address
+        if (!a) { setCityName(`${latitude}, ${longitude}`); return }
+        const city  = a.city || a.town || a.village || a.municipality || a.county || ''
+        const state = a.state || ''
+        setCityName([city, state].filter(Boolean).join(' · '))
       })
       .catch(() => setCityName(`${latitude}, ${longitude}`))
   }, [latitude, longitude])
 
-  return cityName
+  return cityName || `${latitude}, ${longitude}`
 }
