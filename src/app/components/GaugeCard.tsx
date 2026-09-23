@@ -10,9 +10,9 @@ interface GaugeCardProps {
 }
 
 function getStatus(v: number, min: number, max: number) {
-  if (v < min) return { label: 'solo seco', color: '#ef4444', bg: 'bg-red-950 text-red-400' }
-  if (v <= max) return { label: 'ideal ✓', color: '#22c55e', bg: 'bg-green-950 text-green-400' }
-  return { label: 'saturado', color: '#3b82f6', bg: 'bg-blue-950 text-blue-400' }
+  if (v < min) return { label: 'Solo seco', color: '#ef4444', bg: 'bg-red-950 text-red-400' }
+  if (v <= max) return { label: 'Ideal ✓', color: '#22c55e', bg: 'bg-green-950 text-green-400' }
+  return { label: 'Saturado', color: '#3b82f6', bg: 'bg-blue-950 text-blue-400' }
 }
 
 export default function GaugeCard({ value, humidityMin, humidityMax }: GaugeCardProps) {

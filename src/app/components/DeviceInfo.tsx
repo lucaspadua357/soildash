@@ -23,7 +23,6 @@ const rows: Row[] = [
   { key: 'sensorPin', label: 'Sensor / GPIO' },
   { key: 'interval',  label: 'Intervalo', suffix: 's' },
   { key: 'uptime',    label: 'Uptime' },
-  { key: 'ip',        label: 'Endereço IP' },
 ]
 
 export default function DeviceInfo({ device }: DeviceInfoProps) {

@@ -96,7 +96,7 @@ export default function HumidityChart({ history, timeRange, onRangeChange, humid
 
       {history.length === 0 ? (
         <div className="flex items-center justify-center h-50">
-          <p className="text-xs font-mono text-stone-600 animate-pulse">aguardando dados...</p>
+          <p className="text-xs font-mono text-stone-600 animate-pulse">Aguardando dados...</p>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={200}>

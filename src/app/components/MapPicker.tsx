@@ -94,7 +94,7 @@ const MapPicker = React.memo(function MapPicker({
             />
             <div className="absolute top-2 right-2 z-[1000] bg-black/60 backdrop-blur-sm
         rounded-lg px-2 py-1 text-[10px] font-mono text-stone-400">
-                clique ou arraste o marcador
+                Clique ou arraste o marcador
             </div>
         </div>
     )

@@ -51,7 +51,7 @@ export default function ForecastPage({ latitude, longitude }: ForecastPageProps)
 
         {!isLoaded ? (
           <div className="flex items-center justify-center h-40">
-            <p className="text-xs font-mono text-stone-600 animate-pulse">carregando previsão...</p>
+            <p className="text-xs font-mono text-stone-600 animate-pulse">Carregando previsão...</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -86,13 +86,13 @@ export default function ForecastPage({ latitude, longitude }: ForecastPageProps)
 
                   <div className="grid grid-cols-4 gap-2">
                     <div className="bg-stone-950/50 rounded-lg px-3 py-2 text-center">
-                      <p className="text-[10px] font-mono text-stone-500">chuva</p>
+                      <p className="text-[10px] font-mono text-stone-500">Chuva</p>
                       <p className="text-sm font-mono text-cyan-400 font-bold">
                         {day.precipitation.toFixed(1)}mm
                       </p>
                     </div>
                     <div className="bg-stone-950/50 rounded-lg px-3 py-2 text-center">
-                      <p className="text-[10px] font-mono text-stone-500">chance</p>
+                      <p className="text-[10px] font-mono text-stone-500">Chance de chuva</p>
                       <p className={`text-sm font-mono font-bold ${
                         day.rainChance > 70 ? 'text-blue-400' :
                         day.rainChance > 40 ? 'text-cyan-400' :
@@ -102,13 +102,13 @@ export default function ForecastPage({ latitude, longitude }: ForecastPageProps)
                       </p>
                     </div>
                     <div className="bg-stone-950/50 rounded-lg px-3 py-2 text-center">
-                      <p className="text-[10px] font-mono text-stone-500">vento</p>
+                      <p className="text-[10px] font-mono text-stone-500">Vento máximo</p>
                       <p className="text-sm font-mono text-blue-400 font-bold">
                         {day.windSpeed.toFixed(1)}m/s
                       </p>
                     </div>
                     <div className="bg-stone-950/50 rounded-lg px-3 py-2 text-center">
-                      <p className="text-[10px] font-mono text-stone-500">umid. ar</p>
+                      <p className="text-[10px] font-mono text-stone-500">Umid. ar</p>
                       <p className="text-sm font-mono text-green-400 font-bold">
                         {day.humidity}%
                       </p>
@@ -121,7 +121,7 @@ export default function ForecastPage({ latitude, longitude }: ForecastPageProps)
         )}
 
         <p className="text-center text-[10px] font-mono text-stone-700 mt-6">
-          Open-Meteo · atualiza a cada hora
+          Open-Meteo · Atualiza a cada hora
         </p>
 
       </div>

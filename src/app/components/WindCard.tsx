@@ -16,11 +16,11 @@ function directionLabel(deg: number): string {
 }
 
 function windStrength(speed: number): { label: string; color: string } {
-  if (speed < 1)  return { label: 'calmaria',    color: '#78716c' }
-  if (speed < 5)  return { label: 'brisa leve',  color: '#22d3ee' }
-  if (speed < 10) return { label: 'brisa',        color: '#3b82f6' }
-  if (speed < 20) return { label: 'vento forte', color: '#f59e0b' }
-  return               { label: 'vendaval',      color: '#ef4444' }
+  if (speed < 1)  return { label: 'Calmaria',    color: '#78716c' }
+  if (speed < 5)  return { label: 'Brisa leve',  color: '#22d3ee' }
+  if (speed < 10) return { label: 'Brisa',        color: '#3b82f6' }
+  if (speed < 20) return { label: 'Vento forte', color: '#f59e0b' }
+  return               { label: 'Vendaval',      color: '#ef4444' }
 }
 
 export default function WindCard({ speed, direction, isLoaded, latitude, longitude }: WindCardProps) {

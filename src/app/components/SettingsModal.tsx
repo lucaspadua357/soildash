@@ -39,7 +39,7 @@ export default function SettingsModal({
         loading: () => (
             <div className="w-full h-56 rounded-xl bg-stone-800 border border-stone-700 
       flex items-center justify-center">
-                <p className="text-xs font-mono text-stone-600 animate-pulse">carregando mapa...</p>
+                <p className="text-xs font-mono text-stone-600 animate-pulse">Carregando mapa...</p>
             </div>
         )
     })

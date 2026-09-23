@@ -24,7 +24,7 @@ function rssiQuality(rssi: number) {
   if (rssi >= -60) return { label: 'Ótimo', color: 'text-green-400' }
   if (rssi >= -70) return { label: 'Bom', color: 'text-cyan-400' }
   if (rssi >= -80) return { label: 'Fraco', color: 'text-amber-400' }
-  return { label: 'ruim', color: 'text-red-400' }
+  return { label: 'Ruim', color: 'text-red-400' }
 }
 
 function filterByMinute(data: Reading[]): Reading[] {
@@ -115,7 +115,7 @@ export default function HistoryPage() {
           <div>
             <h1 className="text-lg font-semibold text-stone-100">Histórico</h1>
             <p className="text-[10px] font-mono text-stone-500 mt-0.5">
-              {readings.length} leituras · HD-38
+              {readings.length} Leituras · HD-38
             </p>
           </div>
           <button
