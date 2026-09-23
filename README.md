@@ -1,8 +1,6 @@
-# SoilDash — Dashboard de Monitoramento de Solo
+# SoilDash — Dashboard
 
-Dashboard em **Next.js 15 + Tailwind CSS v4** para monitoramento em tempo real de umidade do solo
-via **ESP32-WiFi** com sensor **HD-38**, integrado com **Supabase** para persistência e
-**Open-Meteo** para dados meteorológicos.
+Dashboard web em **Next.js 15 + Tailwind CSS v4** para monitoramento de umidade do solo em tempo real, integrado com **Supabase** para persistência e **Open-Meteo** para dados meteorológicos.
 
 ## Stack
 
@@ -13,42 +11,43 @@ via **ESP32-WiFi** com sensor **HD-38**, integrado com **Supabase** para persist
 | Gráficos | Recharts |
 | Banco de dados | Supabase (PostgreSQL) |
 | Meteorologia | Open-Meteo API (gratuita, sem cadastro) |
-| Hardware | ESP32-WROOM + Sensor HD-38 (GPIO34) |
-| Protocolo | ESP32 → POST direto ao Supabase via HTTPS |
+| Mapa | Leaflet + Esri Satellite |
 | Deploy | Vercel |
 
 ## Estrutura
-soilwatch/
-├── dashboard/ # Aplicação Next.js
-│ ├── src/app/
-│ │ ├── page.tsx # Navegação entre páginas (histórico, dashboard, previsão)
-│ │ ├── layout.tsx # Root layout (dark mode, fontes)
-│ │ ├── globals.css # Tailwind v4 + tema
-│ │ ├── api/
-│ │ │ ├── sensor/route.ts # Lê última leitura do Supabase
-│ │ │ ├── weather/route.ts # Dados meteorológicos atuais (Open-Meteo)
-│ │ │ └── forecast/route.ts # Previsão 7 dias (Open-Meteo)
-│ │ ├── components/
-│ │ │ ├── TopBar.tsx # Status de conexão + IP + última atualização
-│ │ │ ├── MetricCard.tsx # Cards: umidade, temperatura, umidade do ar, RSSI
-│ │ │ ├── HumidityChart.tsx # Gráfico de linha com pontos (1h / 12h / 7d)
-│ │ │ ├── GaugeCard.tsx # Gauge semicircular com status dinâmico
-│ │ │ ├── WindCard.tsx # Rosa dos ventos + velocidade (Open-Meteo)
-│ │ │ ├── DeviceInfo.tsx # Info do firmware, chip, GPIO, uptime
-│ │ │ ├── AlertsPanel.tsx # Alertas com timestamp relativo
-│ │ │ ├── HistoryPage.tsx # Página de histórico com estatísticas + exportar CSV
-│ │ │ ├── ForecastPage.tsx # Página de previsão 7 dias
-│ │ │ └── WeatherDrawer.tsx # Drawer lateral de previsão
-│ │ └── lib/
-│ │ ├── useSensorData.ts # Hook principal — polling + histórico via RPC
-│ │ ├── useWeatherData.ts # Hook meteorológico (Open-Meteo)
-│ │ ├── useWeatherForecast.ts # Hook de previsão 7 dias
-│ │ └── supabase.ts # Cliente Supabase (anon + admin)
-│ └── .env.local.example
-└── firmware/ # Firmware ESP32 (PlatformIO)
-├── platformio.ini
-├── include/config.h # WiFi, pinos, calibração HD-38
-└── src/main.cpp # Leitura HD-38 + envio HTTPS ao Supabase
+
+```
+src/app/
+├── page.tsx                      # Navegação entre páginas
+├── layout.tsx                    # Root layout + SEO + Open Graph
+├── globals.css                   # Tailwind v4 + tema
+├── api/
+│   ├── sensor/route.ts           # Lê última leitura do Supabase
+│   ├── weather/route.ts          # Clima atual (Open-Meteo)
+│   ├── forecast/route.ts         # Previsão 7 dias (Open-Meteo)
+│   ├── settings/route.ts         # CRUD de configurações
+│   └── og-image/route.tsx        # Imagem Open Graph dinâmica
+├── components/
+│   ├── TopBar.tsx                # Status + botão configurações
+│   ├── MetricCard.tsx            # Cards de métricas
+│   ├── HumidityChart.tsx         # Gráfico de barras (1h/12h/7d)
+│   ├── GaugeCard.tsx             # Gauge semicircular
+│   ├── WindCard.tsx              # Rosa dos ventos + velocidade
+│   ├── DeviceInfo.tsx            # Info do ESP32
+│   ├── AlertsPanel.tsx           # Alertas com timestamp
+│   ├── HistoryPage.tsx           # Histórico + estatísticas + CSV
+│   ├── ForecastPage.tsx          # Previsão 7 dias
+│   ├── SettingsModal.tsx         # Modal de configurações
+│   ├── MapPicker.tsx             # Mapa satélite interativo
+│   └── SplashScreen.tsx          # Tela de abertura animada
+└── lib/
+    ├── useSensorData.ts          # Hook principal (polling + histórico RPC)
+    ├── useWeatherData.ts         # Hook meteorológico
+    ├── useWeatherForecast.ts     # Hook previsão 7 dias
+    ├── useSettings.ts            # Hook de configurações
+    ├── useCityName.ts            # Geocoding reverso (Nominatim)
+    └── supabase.ts               # Cliente Supabase (anon + admin)
+```
 
 ## Instalação
 
@@ -56,6 +55,7 @@ soilwatch/
 cd dashboard
 npm install
 cp .env.local.example .env.local
+# preencha as variáveis de ambiente
 npm run dev
 ```
 
@@ -70,6 +70,7 @@ SUPABASE_SERVICE_KEY=sua_service_key
 ## Banco de dados (Supabase)
 
 ```sql
+-- Tabela de leituras
 CREATE TABLE readings (
   id          bigserial PRIMARY KEY,
   created_at  timestamptz DEFAULT now(),
@@ -82,7 +83,23 @@ CREATE TABLE readings (
   firmware    text
 );
 
--- Função RPC para agregação eficiente dos dados do gráfico
+-- Tabela de configurações
+CREATE TABLE settings (
+  id           text PRIMARY KEY DEFAULT 'default',
+  sensor_name  text DEFAULT 'SoilDash',
+  latitude     float DEFAULT -22.2519,
+  longitude    float DEFAULT -45.7044,
+  humidity_min integer DEFAULT 30,
+  humidity_max integer DEFAULT 75,
+  updated_at   timestamptz DEFAULT now()
+);
+
+INSERT INTO settings (id) VALUES ('default');
+
+ALTER TABLE readings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE settings DISABLE ROW LEVEL SECURITY;
+
+-- Função RPC para agregação eficiente do gráfico
 CREATE OR REPLACE FUNCTION get_humidity_history(
   range_minutes INTEGER,
   bucket_minutes INTEGER
@@ -100,50 +117,57 @@ LANGUAGE sql STABLE AS $$
 $$;
 ```
 
-## Firmware ESP32
+## Navegação
 
-O ESP32 envia dados diretamente ao Supabase via HTTPS a cada **5 segundos**,
-sem depender do dashboard estar aberto.
-Ligação HD-38:
-AOUT → GPIO34 (S da placa de expansão)
-VCC → 3.3V (V da placa de expansão)
-GND → GND (G da placa de expansão)
+O dashboard tem **3 páginas** navegáveis pelo footer estilo Spotify:
 
-Para gravar:
-1. Edite `firmware/include/config.h` com SSID e senha do WiFi
-2. Desconecte os fios do módulo RS485 antes de gravar
-3. Grave com **→ Upload** no PlatformIO
-4. Reconecte os fios após a gravação
+| Página | Ícone | Conteúdo |
+|---|---|---|
+| Histórico | 📊 | Estatísticas, mini gráfico, tabela de leituras, exportar CSV |
+| Dashboard | ⊞ | Métricas ao vivo, gráfico, gauge, vento, alertas |
+| Previsão | ☀️ | Previsão 7 dias com temperatura, chuva, chance de chuva, vento |
 
-## Navegação do dashboard
+## Configurações (⚙️)
 
-O dashboard tem **3 páginas** navegáveis pelas setas laterais ou pelos pontos no footer:
+Acessível pelo botão de engrenagem no TopBar:
 
-| Página | Conteúdo |
-|---|---|
-| ← Histórico | Estatísticas, mini gráfico, tabela de leituras + exportar CSV |
-| Dashboard | Métricas ao vivo, gráfico de umidade, gauge, vento, alertas |
-| Previsão → | Previsão 7 dias com temperatura, chuva, chance de precipitação |
+- **Localização** — mapa satélite interativo (Esri) para marcar o ponto exato da propriedade
+- **Limiares de umidade** — sliders para definir mín/máx dos alertas
+- Salvo automaticamente no Supabase
+
+## Gráfico de umidade
+
+- **1h** → 1 ponto a cada 10 minutos (via RPC Supabase)
+- **12h** → 1 ponto por hora
+- **7d** → 1 ponto por dia
+- Cores dinâmicas conforme os limiares configurados
 
 ## Deploy
 
-O dashboard está deployado na Vercel com deploy automático a cada push na branch `main`.
-O ESP32 envia dados independente de onde o dashboard está hospedado.
+```bash
+git add .
+git commit -m "sua mensagem"
+git push
+```
+
+A Vercel faz deploy automático a cada push na branch `main`.
 
 ## Concluído
 
 - [x] Dashboard Next.js com 3 páginas deslizantes
-- [x] Firmware ESP32 com envio direto ao Supabase
-- [x] Gráfico de umidade com agregação via RPC (1h / 12h / 7d)
+- [x] Gráfico de barras com cores por faixa de umidade
 - [x] Histórico completo com exportação CSV
 - [x] Previsão meteorológica 7 dias (Open-Meteo)
-- [x] Dados ao vivo: temperatura, umidade do ar, vento
+- [x] Rosa dos ventos com velocidade e direção
+- [x] Modal de configurações com mapa satélite
+- [x] Limiares de umidade configuráveis
+- [x] Localização via mapa interativo
+- [x] SEO + Open Graph dinâmico
+- [x] Tela de abertura animada
 - [x] Deploy na Vercel
-- [x] Sensor HD-38 calibrado
 
 ## Próximos passos
 
-- [ ] Anemômetro RS485 físico (módulo HW-726 — aguardando cabos jumper)
-- [ ] Alertas por Telegram quando umidade sair da faixa
+- [ ] Alertas por Telegram/email
 - [ ] Suporte a múltiplos sensores
-- [ ] Configuração de limiares pelo dashboard
+- [ ] App mobile
