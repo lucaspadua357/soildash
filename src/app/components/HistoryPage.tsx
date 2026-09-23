@@ -107,7 +107,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-950 p-4 md:p-6 pb-20">
+    <div className="min-h-screen bg-stone-950/40 p-4 md:p-6 pb-50">
       <div className="max-w-3xl mx-auto pt-6">
 
         {/* Header */}
@@ -249,7 +249,7 @@ export default function HistoryPage() {
             disabled={isLoading}
             className="w-full py-3 text-xs font-mono text-stone-500 hover:text-stone-300
               border border-stone-800 hover:border-stone-600 rounded-xl transition-colors
-              disabled:opacity-50"
+              disabled:opacity-50 mb-10"
           >
             {isLoading ? 'carregando...' : 'carregar mais'}
           </button>

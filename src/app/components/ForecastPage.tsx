@@ -39,7 +39,7 @@ export default function ForecastPage({ latitude, longitude }: ForecastPageProps)
   const cityName = useCityName(latitude, longitude)
 
   return (
-    <div className="min-h-screen bg-stone-950 p-4 md:p-6">
+    <div className="min-h-screen bg-stone-950/40 p-4 md:p-6">
       <div className="max-w-3xl mx-auto pt-8 pb-16">
 
         <div className="text-center mb-6">

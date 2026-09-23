@@ -68,7 +68,7 @@ export default function Dashboard() {
 
         {/* Página 2 — Dashboard */}
         <div className="w-screen h-full overflow-y-auto flex-shrink-0">
-          <div className="p-4 md:p-6 pb-16">
+          <div className="p-4 md:p-6 pb-20">
             <div className="max-w-5xl mx-auto space-y-4 pt-4">
 
               <TopBar
@@ -173,23 +173,47 @@ export default function Dashboard() {
       )}
 
       {/* Footer — pontos de navegação */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3">
-        {PAGES.map((p) => (
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-stone-950/40 backdrop-blur-md
+  border-t border-stone-800/50 px-4 py-1">
+        <div className="flex items-center justify-around max-w-sm mx-auto">
+
           <button
-            key={p}
-            onClick={() => setCurrent(p)}
-            className="flex flex-col items-center gap-1 group"
+            onClick={() => setCurrent('history')}
+            className="flex flex-col items-center gap-0.5 py-1.5 px-6 group"
           >
-            <div className={`transition-all duration-300 rounded-full ${current === p
-              ? 'w-6 h-2 bg-stone-300'
-              : 'w-2 h-2 bg-stone-600 group-hover:bg-stone-400'
-              }`} />
-            <span className={`text-[9px] font-mono transition-colors ${current === p ? 'text-stone-400' : 'text-stone-700 group-hover:text-stone-500'
-              }`}>
-              {PAGE_LABELS[p]}
-            </span>
+            <svg viewBox="0 0 24 24" className={`w-5 h-5 transition-colors ${current === 'history' ? 'text-white' : 'text-stone-600 group-hover:text-stone-400'
+              }`} fill="currentColor">
+              <path d="M13 3a9 9 0 0 1 9 9H13V3zm0 9V3a9 9 0 1 0 9 9h-9z" />
+            </svg>
+            <span className={`text-[9px] font-medium transition-colors ${current === 'history' ? 'text-white' : 'text-stone-600 group-hover:text-stone-400'
+              }`}>Histórico</span>
           </button>
-        ))}
+
+          <button
+            onClick={() => setCurrent('dashboard')}
+            className="flex flex-col items-center gap-0.5 py-1.5 px-6 group"
+          >
+            <svg viewBox="0 0 24 24" className={`w-5 h-5 transition-colors ${current === 'dashboard' ? 'text-white' : 'text-stone-600 group-hover:text-stone-400'
+              }`} fill="currentColor">
+              <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+            </svg>
+            <span className={`text-[9px] font-medium transition-colors ${current === 'dashboard' ? 'text-white' : 'text-stone-600 group-hover:text-stone-400'
+              }`}>Dashboard</span>
+          </button>
+
+          <button
+            onClick={() => setCurrent('forecast')}
+            className="flex flex-col items-center gap-0.5 py-1.5 px-6 group"
+          >
+            <svg viewBox="0 0 24 24" className={`w-5 h-5 transition-colors ${current === 'forecast' ? 'text-white' : 'text-stone-600 group-hover:text-stone-400'
+              }`} fill="currentColor">
+              <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z" />
+            </svg>
+            <span className={`text-[9px] font-medium transition-colors ${current === 'forecast' ? 'text-white' : 'text-stone-600 group-hover:text-stone-400'
+              }`}>Previsão</span>
+          </button>
+
+        </div>
       </div>
 
       {/* Modal de configurações */}
