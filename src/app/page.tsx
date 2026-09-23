@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import TopBar from './components/TopBar'
 import MetricCard from './components/MetricCard'
 import HumidityChart from './components/HumidityChart'
@@ -10,9 +10,11 @@ import AlertsPanel from './components/AlertsPanel'
 import WindCard from './components/WindCard'
 import HistoryPage from './components/HistoryPage'
 import ForecastPage from './components/ForecastPage'
+import SettingsModal from './components/SettingsModal'
+import SplashScreen from './components/SplashScreen'
 import { useSensorData } from './lib/useSensorData'
 import { useWeatherData } from './lib/useWeatherData'
-import SplashScreen from './components/SplashScreen'
+import { useSettings } from './lib/useSettings'
 
 const PAGES = ['history', 'dashboard', 'forecast'] as const
 type Page = typeof PAGES[number]
@@ -24,12 +26,27 @@ const PAGE_LABELS: Record<Page, string> = {
 }
 
 export default function Dashboard() {
-  const { data, isConnected, lastUpdate, timeRange, setTimeRange } = useSensorData()
+  const { settings, isSaving, saveSettings } = useSettings()
+  const { data, isConnected, lastUpdate, timeRange, setTimeRange } = useSensorData(settings)
   const { weather, isLoaded } = useWeatherData()
   const [current, setCurrent] = useState<Page>('dashboard')
   const [showSplash, setShowSplash] = useState(true)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const index = PAGES.indexOf(current)
+
+  const handleSettingsClose = useCallback(() => setSettingsOpen(false), [])
+  const handleSettingsOpen = useCallback(() => setSettingsOpen(true), [])
+
+  const settingsModal = useMemo(() => (
+    <SettingsModal
+      isOpen={settingsOpen}
+      onClose={handleSettingsClose}
+      settings={settings}
+      isSaving={isSaving}
+      onSave={saveSettings}
+    />
+  ), [settingsOpen, settings, isSaving, saveSettings, handleSettingsClose])
 
   if (showSplash) {
     return <SplashScreen onFinish={() => setShowSplash(false)} />
@@ -54,7 +71,11 @@ export default function Dashboard() {
           <div className="p-4 md:p-6 pb-16">
             <div className="max-w-5xl mx-auto space-y-4 pt-4">
 
-              <TopBar isConnected={isConnected} lastUpdate={lastUpdate} />
+              <TopBar
+                isConnected={isConnected}
+                lastUpdate={lastUpdate}
+                onSettingsOpen={handleSettingsOpen}
+              />
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <MetricCard
@@ -63,7 +84,7 @@ export default function Dashboard() {
                   unit="%"
                   icon="💧"
                   trend={data.humidityTrend}
-                  status={data.humidity < 30 ? 'low' : data.humidity > 80 ? 'high' : 'ok'}
+                  status={data.humidity < settings.humidity_min ? 'low' : data.humidity > settings.humidity_max ? 'high' : 'ok'}
                 />
                 <MetricCard
                   label="TEMPERATURA"
@@ -107,18 +128,22 @@ export default function Dashboard() {
                   speed={weather.windSpeed}
                   direction={weather.windDirection}
                   isLoaded={isLoaded}
+                  latitude={settings.latitude}
+                  longitude={settings.longitude}
                 />
                 <DeviceInfo device={data.device} />
                 <AlertsPanel alerts={data.alerts} />
               </div>
-
             </div>
           </div>
         </div>
 
         {/* Página 3 — Previsão */}
         <div className="w-screen h-full overflow-y-auto flex-shrink-0 pb-16">
-          <ForecastPage />
+          <ForecastPage
+            latitude={settings.latitude}
+            longitude={settings.longitude}
+          />
         </div>
 
       </div>
@@ -156,8 +181,8 @@ export default function Dashboard() {
             className="flex flex-col items-center gap-1 group"
           >
             <div className={`transition-all duration-300 rounded-full ${current === p
-                ? 'w-6 h-2 bg-stone-300'
-                : 'w-2 h-2 bg-stone-600 group-hover:bg-stone-400'
+              ? 'w-6 h-2 bg-stone-300'
+              : 'w-2 h-2 bg-stone-600 group-hover:bg-stone-400'
               }`} />
             <span className={`text-[9px] font-mono transition-colors ${current === p ? 'text-stone-400' : 'text-stone-700 group-hover:text-stone-500'
               }`}>
@@ -166,6 +191,9 @@ export default function Dashboard() {
           </button>
         ))}
       </div>
+
+      {/* Modal de configurações */}
+      {settingsModal}
 
     </div>
   )

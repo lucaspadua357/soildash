@@ -67,7 +67,7 @@ export default function SplashScreen({ onFinish }: { onFinish: () => void }) {
 
         <p className={`text-[10px] font-mono text-stone-600 mt-3 transition-all duration-500 delay-500
           ${phase === 'text' ? 'opacity-100' : 'opacity-0'}`}>
-          monitoramento de solo em tempo real
+          Monitoramento de solo em tempo real
         </p>
       </div>
 

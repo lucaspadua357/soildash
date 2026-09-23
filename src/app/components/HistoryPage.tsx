@@ -14,16 +14,16 @@ interface Reading {
 }
 
 function humidityColor(v: number) {
-  if (v < 25) return { text: 'text-red-400', bg: '#ef4444', label: 'seco' }
-  if (v < 45) return { text: 'text-amber-400', bg: '#f59e0b', label: 'atenção' }
-  if (v <= 75) return { text: 'text-green-400', bg: '#22c55e', label: 'ideal' }
-  return { text: 'text-blue-400', bg: '#3b82f6', label: 'saturado' }
+  if (v < 25) return { text: 'text-red-400', bg: '#ef4444', label: 'Seco' }
+  if (v < 45) return { text: 'text-amber-400', bg: '#f59e0b', label: 'Atenção' }
+  if (v <= 75) return { text: 'text-green-400', bg: '#22c55e', label: 'Ideal' }
+  return { text: 'text-blue-400', bg: '#3b82f6', label: 'Saturado' }
 }
 
 function rssiQuality(rssi: number) {
-  if (rssi >= -60) return { label: 'ótimo', color: 'text-green-400' }
-  if (rssi >= -70) return { label: 'bom', color: 'text-cyan-400' }
-  if (rssi >= -80) return { label: 'fraco', color: 'text-amber-400' }
+  if (rssi >= -60) return { label: 'Ótimo', color: 'text-green-400' }
+  if (rssi >= -70) return { label: 'Bom', color: 'text-cyan-400' }
+  if (rssi >= -80) return { label: 'Fraco', color: 'text-amber-400' }
   return { label: 'ruim', color: 'text-red-400' }
 }
 
@@ -132,19 +132,19 @@ export default function HistoryPage() {
           <div className="bg-stone-900 rounded-xl border border-stone-800 p-4 mb-4">
             <div className="grid grid-cols-3 gap-3 mb-3">
               <div className="text-center">
-                <p className="text-[10px] font-mono text-stone-500 mb-1">média</p>
+                <p className="text-[10px] font-mono text-stone-500 mb-1">Média</p>
                 <p className={`text-xl font-bold font-mono ${humidityColor(avg).text}`}>
                   {avg.toFixed(1)}%
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-[10px] font-mono text-stone-500 mb-1">máximo</p>
+                <p className="text-[10px] font-mono text-stone-500 mb-1">Máximo</p>
                 <p className={`text-xl font-bold font-mono ${humidityColor(max).text}`}>
                   {max.toFixed(1)}%
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-[10px] font-mono text-stone-500 mb-1">mínimo</p>
+                <p className="text-[10px] font-mono text-stone-500 mb-1">Mínimo</p>
                 <p className={`text-xl font-bold font-mono ${humidityColor(min).text}`}>
                   {min.toFixed(1)}%
                 </p>
@@ -174,7 +174,7 @@ export default function HistoryPage() {
               </ResponsiveContainer>
             </div>
             <p className="text-[9px] font-mono text-stone-600 text-right mt-1">
-              últimas 20 leituras
+              Últimas 20 leituras
             </p>
           </div>
         )}
@@ -182,17 +182,17 @@ export default function HistoryPage() {
         {/* Lista compacta */}
         {isLoading && readings.length === 0 ? (
           <div className="flex items-center justify-center h-40">
-            <p className="text-xs font-mono text-stone-600 animate-pulse">carregando...</p>
+            <p className="text-xs font-mono text-stone-600 animate-pulse">Carregando...</p>
           </div>
         ) : (
           <div className="bg-stone-900 rounded-xl border border-stone-800 overflow-hidden mb-4">
 
             {/* Cabeçalho */}
             <div className="grid grid-cols-12 px-4 py-2 border-b border-stone-800 bg-stone-950">
-              <span className="col-span-5 text-[10px] font-mono text-stone-500">horário</span>
-              <span className="col-span-3 text-[10px] font-mono text-stone-500 text-center">umidade</span>
-              <span className="col-span-2 text-[10px] font-mono text-stone-500 text-center">status</span>
-              <span className="col-span-2 text-[10px] font-mono text-stone-500 text-right">wifi</span>
+              <span className="col-span-5 text-[10px] font-mono text-stone-500">Horário</span>
+              <span className="col-span-3 text-[10px] font-mono text-stone-500 text-center">Umidade</span>
+              <span className="col-span-2 text-[10px] font-mono text-stone-500 text-center">Status</span>
+              <span className="col-span-2 text-[10px] font-mono text-stone-500 text-right">Wi-Fi</span>
             </div>
 
             {readings.map((r, i) => {

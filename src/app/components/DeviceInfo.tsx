@@ -18,12 +18,12 @@ interface Row {
 }
 
 const rows: Row[] = [
-  { key: 'firmware',  label: 'firmware' },
-  { key: 'chip',      label: 'chip' },
-  { key: 'sensorPin', label: 'sensor / GPIO' },
-  { key: 'interval',  label: 'intervalo', suffix: 's' },
-  { key: 'uptime',    label: 'uptime' },
-  { key: 'ip',        label: 'endereço IP' },
+  { key: 'firmware',  label: 'Firmware' },
+  { key: 'chip',      label: 'Chip' },
+  { key: 'sensorPin', label: 'Sensor / GPIO' },
+  { key: 'interval',  label: 'Intervalo', suffix: 's' },
+  { key: 'uptime',    label: 'Uptime' },
+  { key: 'ip',        label: 'Endereço IP' },
 ]
 
 export default function DeviceInfo({ device }: DeviceInfoProps) {

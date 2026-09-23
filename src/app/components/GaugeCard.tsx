@@ -5,10 +5,10 @@ interface GaugeCardProps {
 }
 
 function getStatus(v: number) {
-  if (v < 25) return { label: 'solo seco', color: '#ef4444', bg: 'bg-red-950 text-red-400' }
-  if (v < 45) return { label: 'atenção', color: '#f59e0b', bg: 'bg-amber-950 text-amber-400' }
-  if (v <= 75) return { label: 'ideal ✓', color: '#22c55e', bg: 'bg-green-950 text-green-400' }
-  return { label: 'saturado', color: '#3b82f6', bg: 'bg-blue-950 text-blue-400' }
+  if (v < 25) return { label: 'Solo Seco', color: '#ef4444', bg: 'bg-red-950 text-red-400' }
+  if (v < 45) return { label: 'Atenção', color: '#f59e0b', bg: 'bg-amber-950 text-amber-400' }
+  if (v <= 75) return { label: 'Ideal ✓', color: '#22c55e', bg: 'bg-green-950 text-green-400' }
+  return { label: 'Saturado', color: '#3b82f6', bg: 'bg-blue-950 text-blue-400' }
 }
 
 export default function GaugeCard({ value }: GaugeCardProps) {
@@ -48,7 +48,7 @@ export default function GaugeCard({ value }: GaugeCardProps) {
       <p className="text-4xl font-bold font-mono tabular-nums mt-1" style={{ color }}>
         {clamp.toFixed(0)}%
       </p>
-      <p className="text-xs font-mono text-stone-500 mt-1">umidade volumétrica</p>
+      <p className="text-xs font-mono text-stone-500 mt-1">Umidade volumétrica</p>
 
       <span className={`mt-3 px-3 py-1 rounded-full text-xs font-mono ${bg}`}>
         {label}

@@ -107,7 +107,7 @@ const initialData: SensorData = {
   alerts: [],
 }
 
-export function useSensorData() {
+export function useSensorData(settings: { humidity_min: number; humidity_max: number }) {
   const [data, setData] = useState<SensorData>(initialData)
   const [isConnected, setIsConnected] = useState(false)
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
@@ -163,11 +163,22 @@ export function useSensorData() {
       setData(prev => {
         const newAlerts = [...prev.alerts]
 
-        if (json.humidity < 30 && prev.alerts[0]?.message !== 'Umidade crítica — abaixo de 30%') {
+        if (json.humidity < settings.humidity_min &&
+          prev.alerts[0]?.message !== `Umidade baixa — abaixo de ${settings.humidity_min}%`) {
           newAlerts.unshift({
             id: Date.now().toString(),
             type: 'warn' as const,
-            message: 'Umidade crítica — abaixo de 30%',
+            message: `Umidade baixa — abaixo de ${settings.humidity_min}%`,
+            timestamp: new Date(),
+          })
+        }
+
+        if (json.humidity > settings.humidity_max &&
+          prev.alerts[0]?.message !== `Umidade alta — acima de ${settings.humidity_max}%`) {
+          newAlerts.unshift({
+            id: Date.now().toString(),
+            type: 'warn' as const,
+            message: `Umidade alta — acima de ${settings.humidity_max}%`,
             timestamp: new Date(),
           })
         }
