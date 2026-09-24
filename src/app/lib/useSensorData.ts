@@ -163,22 +163,20 @@ export function useSensorData(settings: { humidity_min: number; humidity_max: nu
       setData(prev => {
         const newAlerts = [...prev.alerts]
 
-        if (json.humidity < settings.humidity_min &&
-          prev.alerts[0]?.message !== `Umidade baixa — abaixo de ${settings.humidity_min}%`) {
+        if (json.humidity >= 85 && prev.alerts[0]?.message !== 'Solo encharcado — risco de apodrecer raízes') {
           newAlerts.unshift({
             id: Date.now().toString(),
             type: 'warn' as const,
-            message: `Umidade baixa — abaixo de ${settings.humidity_min}%`,
+            message: 'Solo encharcado — risco de apodrecer raízes',
             timestamp: new Date(),
           })
         }
 
-        if (json.humidity > settings.humidity_max &&
-          prev.alerts[0]?.message !== `Umidade alta — acima de ${settings.humidity_max}%`) {
+        if (json.humidity < settings.humidity_min && prev.alerts[0]?.message !== 'Solo seco — hora de acionar a rega') {
           newAlerts.unshift({
             id: Date.now().toString(),
             type: 'warn' as const,
-            message: `Umidade alta — acima de ${settings.humidity_max}%`,
+            message: 'Solo seco — hora de acionar a rega',
             timestamp: new Date(),
           })
         }

@@ -51,7 +51,7 @@ export default function SobrePage() {
       <section className="px-6 sm:px-10 pt-16 pb-20">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
           <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-stone-100 leading-[1.05]">
-            Umidade do solo,
+            Umidade do solo
             <br />
             medida em tempo real.
           </h1>

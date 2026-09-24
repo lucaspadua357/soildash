@@ -10,9 +10,9 @@ interface GaugeCardProps {
 }
 
 function getStatus(v: number, min: number, max: number) {
-  if (v < min) return { label: 'Solo seco', color: '#ef4444', bg: 'bg-red-950 text-red-400' }
-  if (v <= max) return { label: 'Ideal ✓', color: '#22c55e', bg: 'bg-green-950 text-green-400' }
-  return { label: 'Saturado', color: '#3b82f6', bg: 'bg-blue-950 text-blue-400' }
+  if (v >= 85)  return { label: 'Solo Encharcado ⚠️', color: '#3b82f6', bg: 'bg-blue-950 text-blue-400'   }
+  if (v >= min) return { label: 'Solo Ideal ✓',       color: '#22c55e', bg: 'bg-green-950 text-green-400' }
+  return               { label: 'Solo Seco 💧',        color: '#ef4444', bg: 'bg-red-950 text-red-400'    }
 }
 
 export default function GaugeCard({ value, humidityMin, humidityMax }: GaugeCardProps) {
@@ -52,7 +52,7 @@ export default function GaugeCard({ value, humidityMin, humidityMax }: GaugeCard
       <p className="text-4xl font-bold font-mono tabular-nums mt-1" style={{ color }}>
         {clamp.toFixed(0)}%
       </p>
-      <p className="text-xs font-mono text-stone-500 mt-1">Umidade volumétrica</p>
+      <p className="text-xs font-mono text-stone-500 mt-1">Condição do solo</p>
 
       <span className={`mt-3 px-3 py-1 rounded-full text-xs font-mono ${bg}`}>
         {label}

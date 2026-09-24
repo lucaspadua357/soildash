@@ -26,15 +26,15 @@ const RANGES: { value: TimeRange; label: string }[] = [
 ]
 
 function getColor(v: number, min: number, max: number) {
-  if (v < min)  return '#ef4444'
-  if (v <= max) return '#22c55e'
-  return '#3b82f6'
+  if (v >= 85)       return '#3b82f6'  // azul — encharcado
+  if (v >= min)      return '#22c55e'  // verde — ideal
+  return '#ef4444'                      // vermelho — seco
 }
 
 function getStatus(v: number, min: number, max: number) {
-  if (v < min)  return 'seco'
-  if (v <= max) return 'ideal'
-  return 'saturado'
+  if (v >= 85)  return 'Solo Encharcado'
+  if (v >= min) return 'Solo Ideal'
+  return 'Solo Seco'
 }
 
 export default function HumidityChart({ history, timeRange, onRangeChange, humidityMin, humidityMax }: HumidityChartProps) {

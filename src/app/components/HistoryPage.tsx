@@ -13,11 +13,16 @@ interface Reading {
   rssi: number
 }
 
-function humidityColor(v: number) {
-  if (v < 25) return { text: 'text-red-400', bg: '#ef4444', label: 'Seco' }
-  if (v < 45) return { text: 'text-amber-400', bg: '#f59e0b', label: 'Atenção' }
-  if (v <= 75) return { text: 'text-green-400', bg: '#22c55e', label: 'Ideal' }
-  return { text: 'text-blue-400', bg: '#3b82f6', label: 'Saturado' }
+interface HumidityStatus {
+  label: string  // texto do status
+  text: string   // classe Tailwind da cor do texto
+  bg: string     // cor hex da barrinha (usada em style)
+}
+
+function humidityColor(v: number): HumidityStatus {
+  if (v >= 85) return { label: 'Encharcado', text: 'text-blue-400',  bg: '#60a5fa' }
+  if (v >= 45) return { label: 'Ideal',      text: 'text-green-400', bg: '#4ade80' }
+  return               { label: 'Seco',       text: 'text-red-400',   bg: '#f87171' }
 }
 
 function rssiQuality(rssi: number) {
@@ -64,17 +69,13 @@ export default function HistoryPage() {
       .range(pageNum * PAGE_SIZE, (pageNum + 1) * PAGE_SIZE - 1)
 
     if (!error && data) {
-      setReadings(prev => pageNum === 0 ? data : [...prev, ...data])
-      setHasMore(data.length === PAGE_SIZE)
-    }
-    setIsLoading(false)
-    if (!error && data) {
       setReadings(prev => {
         const combined = pageNum === 0 ? data : [...prev, ...data]
         return filterByMinute(combined)
       })
       setHasMore(data.length === PAGE_SIZE)
     }
+    setIsLoading(false)
   }, [])
 
   useEffect(() => { fetchReadings(0) }, [fetchReadings])
@@ -102,7 +103,7 @@ export default function HistoryPage() {
     const blob = new Blob([csv], { type: 'text/csv' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
-    a.download = `soilwatch-${new Date().toISOString().split('T')[0]}.csv`
+    a.download = `soildash-${new Date().toISOString().split('T')[0]}.csv`
     a.click()
   }
 

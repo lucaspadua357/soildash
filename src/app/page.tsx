@@ -79,12 +79,12 @@ export default function Dashboard() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <MetricCard
-                  label="UMIDADE SOLO"
+                  label="CONDIÇÃO DO SOLO"
                   value={data.humidity}
                   unit="%"
-                  icon="💧"
+                  icon="🌱"
                   trend={data.humidityTrend}
-                  status={data.humidity < settings.humidity_min ? 'low' : data.humidity > settings.humidity_max ? 'high' : 'ok'}
+                  status={data.humidity >= 85 ? 'high' : data.humidity < settings.humidity_min ? 'low' : 'ok'}
                 />
                 <MetricCard
                   label="TEMPERATURA"
@@ -129,15 +129,21 @@ export default function Dashboard() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <WindCard
-                  speed={weather.windSpeed}
-                  direction={weather.windDirection}
-                  isLoaded={isLoaded}
-                  latitude={settings.latitude}
-                  longitude={settings.longitude}
-                />
-                <DeviceInfo device={data.device} />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:items-start">
+                <div className="md:h-[420px] [&>*]:h-full">
+                  <WindCard
+                    speed={weather.windSpeed}
+                    direction={weather.windDirection}
+                    isLoaded={isLoaded}
+                    latitude={settings.latitude}
+                    longitude={settings.longitude}
+                  />
+                </div>
+
+                <div className="md:h-[420px] [&>*]:h-full">
+                  <DeviceInfo device={data.device} />
+                </div>
+
                 <AlertsPanel alerts={data.alerts} />
               </div>
             </div>
@@ -226,6 +232,6 @@ export default function Dashboard() {
       {settingsModal}
 
     </div>
-    
+
   )
 }
