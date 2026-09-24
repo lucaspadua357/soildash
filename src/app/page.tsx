@@ -226,5 +226,6 @@ export default function Dashboard() {
       {settingsModal}
 
     </div>
+    
   )
 }

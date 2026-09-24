@@ -48,9 +48,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${syne.variable} ${dmMono.variable} font-sans antialiased`}
         suppressHydrationWarning>
         {children}
-        <footer className="text-xs text-stone-500 text-center py-6">
-          SoilDash — monitoramento de umidade do solo com ESP32 e sensor HD-38. Projeto FETIN 2026 · Inatel.
-        </footer>
       </body>
     </html>
   )
